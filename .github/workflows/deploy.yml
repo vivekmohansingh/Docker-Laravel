@@ -41,9 +41,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID123 }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY123 }}
-          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::648932717413:role/aws-ecr-ecs-access
+          role-duration-seconds: 900 # the ttl of the session, in seconds.
+          aws-region: ap-northeast-1
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -57,13 +57,19 @@ jobs:
           IMAGE_TAG: latest
         run: |
           docker-compose build
-          docker tag larvel-nginx:latest $ECR_REGISTRY/larvel-nginx:$IMAGE_TAG
-          docker tag larvel-app:latest $ECR_REGISTRY/larvel-app:$IMAGE_TAG
-          docker push $ECR_REGISTRY/larvel-nginx:$IMAGE_TAG
-          docker push $ECR_REGISTRY/larvel-app:$IMAGE_TAG
+          docker tag docker-laravel-app:latest $ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG
+          docker tag mysql:latest $ECR_REGISTRY/mysql:$IMAGE_TAG
+          docker tag nginx:latest $ECR_REGISTRY/nginx:$IMAGE_TAG
+          docker tag phpmyadmin/phpmyadmin:latest $ECR_REGISTRY/phpmyadmin/phpmyadmin:$IMAGE_TAG
+          docker push $ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG
+          docker push $ECR_REGISTRY/mysql:$IMAGE_TAG
+          docker push $ECR_REGISTRY/nginx:$IMAGE_TAG
+          docker push $ECR_REGISTRY/phpmyadmin/phpmyadmin:$IMAGE_TAG
           echo "setting output values"
-          echo "::set-output name=appimage::$ECR_REGISTRY/larvel-app:$IMAGE_TAG"
-          echo "::set-output name=webimage::$ECR_REGISTRY/larvel-nginx:$IMAGE_TAG"
+          echo "::set-output name=appimage::$ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG"
+          echo "::set-output name=webimage::$ECR_REGISTRY/mysql:$IMAGE_TAG"
+          echo "::set-output name=appimage::$ECR_REGISTRY/phpmyadmin/phpmyadmin:$IMAGE_TAG"
+          echo "::set-output name=webimage::$ECR_REGISTRY/nginx:$IMAGE_TAG"
 
       # Runs a single command using the runners shell
       - name: Print the image name
@@ -98,5 +104,5 @@ jobs:
         with:
           task-definition: ${{ steps.web-task-def.outputs.task-definition }}
           service: testserviceelb
-          cluster: testelb
+          cluster: DevCluster
           wait-for-service-stability: true
