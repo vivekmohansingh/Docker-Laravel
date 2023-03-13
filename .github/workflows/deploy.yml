@@ -61,6 +61,8 @@ jobs:
         run: |
           docker-compose build
           docker tag docker-laravel-app:latest $ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG
+          docker push $ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG
+          echo "::set-output name=appimage::$ECR_REGISTRY/docker-laravel-app:$IMAGE_TAG"
           docker tag mysql:latest $ECR_REGISTRY/mysql:$IMAGE_TAG
           docker tag nginx:latest $ECR_REGISTRY/nginx:$IMAGE_TAG
           docker tag phpmyadmin/phpmyadmin:latest $ECR_REGISTRY/phpmyadmin/phpmyadmin:$IMAGE_TAG
