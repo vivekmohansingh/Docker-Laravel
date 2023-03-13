@@ -4,7 +4,7 @@ services:
 
   # Web Server Service
   nginx:
-    image: nginx:alpine
+    image: nginx
     container_name: nginx
     ports:
       - "8080:80"
@@ -41,6 +41,7 @@ services:
   # Application Service
   app:
     container_name: blog
+    image: docker-laravel-app
     build: 
       context: .
       dockerfile: Dockerfile
