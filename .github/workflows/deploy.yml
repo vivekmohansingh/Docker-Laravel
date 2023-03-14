@@ -3,7 +3,7 @@
 name: CI
 permissions:
   id-token: write # required to use OIDC authentication
-  contents: read # required to checkout the code from the repo
+  contents: write # required to checkout the code from the repo
 
 # Controls when the workflow will run
 on:
@@ -46,6 +46,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::648932717413:role/aws-ecr-ecs-access
           role-duration-seconds: 900 # the ttl of the session, in seconds.
+          role-session-name: GitHubActions
           aws-region: ap-northeast-1
 
       - name: Login to Amazon ECR
