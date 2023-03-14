@@ -2,7 +2,7 @@
 
 name: CI
 permissions:
-  id-token: write # required to use OIDC authentication
+  id-token: write # required to use OIDC authentication test
   contents: write # required to checkout the code from the repo
 
 # Controls when the workflow will run
